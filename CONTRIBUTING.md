@@ -1,0 +1,1 @@
+"We welcome contributions to the TokenClaw core. Please ensure your PRs follow the PEP 8 style guide. For major changes to the SED algorithm, please open an issue first to discuss your proposed threshold adjustments."
