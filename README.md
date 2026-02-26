@@ -37,10 +37,13 @@ tokenclaw/
 └── README.md                 # Documentation
 
 🛠 Advanced Installation & Usage
-Installation
-Bash
+## ⚙️ Installation
 
-pip install tokenclaw-sdk
+### 1. Install via Pip (Developer Mode)
+```bash
+git clone [https://github.com/tokenclawback/tokenclaw-solana-sdk.git](https://github.com/tokenclawback/tokenclaw-solana-sdk.git)
+cd tokenclaw-solana-sdk
+pip install -e .
 
 Initializing the DeFAI Client
 
