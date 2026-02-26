@@ -26,3 +26,21 @@ class IntentEngine:
         print(f"[*] Intent Triggered: Converting {amount_sol} SOL savings into ${self.agent_token_mint[:4]} buyback.")
         # Logic for interacting with pump.fun program would go here
         return True
+
+from jup_python_sdk.clients.ultra_api_client import UltraApiClient
+
+async def execute_clawback_buyback(amount_lamports: int, agent_mint: str):
+    """
+    Real execution: Swaps saved SOL for the Agent's utility token.
+    """
+    client = UltraApiClient() # Requires PRIVATE_KEY in .env
+    try:
+        # Swap SOL (So111...) for Agent Token
+        response = await client.swap(
+            input_mint="So11111111111111111111111111111111111111112",
+            output_mint=agent_mint,
+            amount=amount_lamports
+        )
+        return response.get("signature")
+    except Exception as e:
+        print(f"Swap failed: {e}")
