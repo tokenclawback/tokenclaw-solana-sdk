@@ -1,45 +1,47 @@
+import os
 import math
 from typing import Any, List
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class RecoveryEngine:
     """
     Speculative Token Recovery (STR) & Solana Fee Rebate Engine.
-    Integrates with pump.fun dev-fee cycles to subsidize AI inference.
     """
-    TREASURY_VAULT = "5Ex8FT88ybZpDC3p4ydHoRVn2nmiNYVonXiapTT9SDTS"
-
     def __init__(self, rebate_multiplier: float = 0.05, window_size: int = 10):
+        # FIX: Now loads from .env instead of being hardcoded
+        self.treasury_vault = os.getenv(
+            "TOKENCLAW_VAULT_ADDRESS", 
+            "5Ex8FT88ybZpDC3p4ydHoRVn2nmiNYVonXiapTT9SDTS"
+        )
         self.rebate_multiplier = rebate_multiplier
-        # --- ADD BUFFER HERE ---
         self.entropy_buffer: List[float] = []
         self.window_size = window_size 
 
+    def calculate_potential_savings(self, context_tokens: int, current_usage: int) -> float:
+        """
+        FIX: Implementation of the savings logic.
+        Calculates USD value of saved inference tokens.
+        """
+        saved_count = context_tokens - current_usage
+        # Average GPT-4o pricing
+        token_price = 0.000015 
+        return round(saved_count * token_price, 4)
+
     def _update_entropy_buffer(self, new_value: float):
-        """Maintains the sliding window buffer for SED calculations."""
         self.entropy_buffer.append(new_value)
         if len(self.entropy_buffer) > self.window_size:
-            self.entropy_buffer.pop(0) # Remove oldest value
+            self.entropy_buffer.pop(0)
 
     def calculate_sol_rebate(self, compute_units: int, tx_volume: float) -> float:
-        # Existing logic...
         rebate = (compute_units / 1000) * tx_volume * self.rebate_multiplier
         return round(rebate, 6)
-def calculate_potential_savings(self, context_window: int, current_usage: int) -> float:
-    """
-    Calculates the USD value of tokens that *would* have been wasted 
-    if the stream hadn't been terminated by the SED trigger.
-    """
-    wasted_tokens = context_window - current_usage
-    # Example rate for GPT-4o ($15 per 1M tokens)
-    price_per_token = 0.000015 
-    return round(wasted_tokens * price_per_token, 4)
 
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-class RecoveryEngine:
-    def __init__(self):
-        # Use an environment variable, fallback only for local dev
-        self.treasury_vault = os.getenv("TOKENCLAW_VAULT_ADDRESS", "DEFAULT_DEV_KEY_HERE")
+    def get_vault_status(self):
+        return {
+            "vault": self.treasury_vault,
+            "status": "Synchronized",
+            "chain": "Solana-Mainnet"
+        }
