@@ -33,3 +33,13 @@ def calculate_potential_savings(self, context_window: int, current_usage: int) -
     # Example rate for GPT-4o ($15 per 1M tokens)
     price_per_token = 0.000015 
     return round(wasted_tokens * price_per_token, 4)
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class RecoveryEngine:
+    def __init__(self):
+        # Use an environment variable, fallback only for local dev
+        self.treasury_vault = os.getenv("TOKENCLAW_VAULT_ADDRESS", "DEFAULT_DEV_KEY_HERE")
