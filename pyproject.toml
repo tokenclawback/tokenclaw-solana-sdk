@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tokenclaw-sdk"
+version = "0.1.0"
+description = "DeFAI middleware for speculative token recovery on Solana."
+readme = "README.md"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+dependencies = [
+    "openai>=1.0.0",
+    "solders>=0.18.0",
+    "solana>=0.30.0",
+    "jup-python-sdk>=0.0.1"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core*", "integrations*", "blockchain*"]
