@@ -24,3 +24,12 @@ class RecoveryEngine:
         # Existing logic...
         rebate = (compute_units / 1000) * tx_volume * self.rebate_multiplier
         return round(rebate, 6)
+def calculate_potential_savings(self, context_window: int, current_usage: int) -> float:
+    """
+    Calculates the USD value of tokens that *would* have been wasted 
+    if the stream hadn't been terminated by the SED trigger.
+    """
+    wasted_tokens = context_window - current_usage
+    # Example rate for GPT-4o ($15 per 1M tokens)
+    price_per_token = 0.000015 
+    return round(wasted_tokens * price_per_token, 4)
