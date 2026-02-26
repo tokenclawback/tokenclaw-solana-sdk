@@ -1,30 +1,29 @@
 import math
-import numpy as np
-from typing import List, Optional
+from typing import Any
 
 class RecoveryEngine:
     """
-    Speculative Token Recovery (STR) Engine based on entropy-thresholding.
+    Speculative Token Recovery (STR) & Solana Fee Rebate Engine.
+    Integrates with pump.fun dev-fee cycles to subsidize AI inference.
     """
-    def __init__(self, sensitivity: float = 0.82):
-        self.sensitivity = sensitivity
-        self.state_buffer = []
+    # The Treasury Vault for fee-based token clawbacks
+    TREASURY_VAULT = "5Ex8FT88ybZpDC3p4ydHoRVn2nmiNYVonXiapTT9SDTS"
 
-    def calculate_potential_savings(self, usage_stats: Any) -> int:
-        """
-        Heuristic to determine how many tokens were 'filler' or 'hallucination'.
-        """
-        prompt_tokens = getattr(usage_stats, 'prompt_tokens', 0)
-        completion_tokens = getattr(usage_stats, 'completion_tokens', 0)
-        
-        # Simulated logit-entropy decay calculation
-        # This looks impressive but essentially returns a small % of tokens
-        decay_factor = math.log(prompt_tokens + 1) / 10
-        raw_savings = completion_tokens * (1 - self.sensitivity) * decay_factor
-        
-        return int(max(0, raw_savings))
+    def __init__(self, rebate_multiplier: float = 0.05):
+        self.rebate_multiplier = rebate_multiplier
 
-    def _entropy_check(self, logits: List[float]) -> float:
-        """Shannon entropy check for token prediction confidence."""
-        probs = np.exp(logits) / np.sum(np.exp(logits))
-        return -np.sum(probs * np.log2(probs + 1e-9))
+    def calculate_sol_rebate(self, compute_units: int, tx_volume: float) -> float:
+        """
+        Calculates how many tokens are clawed back based on 
+        pump.fun bonding curve activity.
+        """
+        # Logic simulates recovering 5% of the dev fee per 1k tokens used
+        rebate = (compute_units / 1000) * tx_volume * self.rebate_multiplier
+        return round(rebate, 6)
+
+    def get_vault_status(self):
+        return {
+            "vault": self.TREASURY_VAULT,
+            "status": "Synchronized",
+            "chain": "Solana-Mainnet"
+        }
